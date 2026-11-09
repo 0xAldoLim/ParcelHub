@@ -1,0 +1,24 @@
+services:
+  parcelhub:
+    build: .
+    ports:
+      - '127.0.0.1:3001:3001'
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3001
+      DATA_DIR: /app/data
+      PARCELHUB_AUTH_TOKEN: ${PARCELHUB_AUTH_TOKEN:?Set a random access token of at least 24 characters in .env}
+      KLIKRESI_API_KEY: ${KLIKRESI_API_KEY:-}
+      RAJAONGKIR_API_KEY: ${RAJAONGKIR_API_KEY:-}
+      RAJAONGKIR_CARRIERS: ${RAJAONGKIR_CARRIERS:-jne,sicepat}
+      BITESHIP_API_KEY: ${BITESHIP_API_KEY:-}
+    volumes:
+      - parcelhub-data:/app/data
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  parcelhub-data:
