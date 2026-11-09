@@ -201,9 +201,9 @@ export function Settings() {
     <>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">MAKE YOURSELF AT HOME</div>
+          <div className="eyebrow">WORKSPACE CONFIGURATION</div>
           <h1>{t.settings}</h1>
-          <p>A workspace that works your way.</p>
+          <p>Manage providers, refresh rules, and your data.</p>
         </div>
         <button className="button primary" disabled={!online || busy} onClick={() => void save()}>
           <Save size={16} />

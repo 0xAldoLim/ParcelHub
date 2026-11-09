@@ -1,6 +1,6 @@
 # ParcelHub
 
-**All your deliveries. One calm place.** A self-hosted parcel dashboard for Indonesian couriers, with SQLite persistence, offline editing, and explicit tracking provenance.
+**Every shipment. One workspace.** A self-hosted parcel dashboard for Indonesian couriers, with SQLite persistence, offline editing, and explicit tracking provenance.
 
 ![ParcelHub dashboard with explicitly synthetic test shipments](docs/screenshots/desktop.png)
 

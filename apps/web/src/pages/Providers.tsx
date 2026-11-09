@@ -11,7 +11,7 @@ export function Couriers() {
     <>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">ACROSS THE ARCHIPELAGO</div>
+          <div className="eyebrow">CARRIER DIRECTORY</div>
           <h1>{t.carriers}</h1>
           <p>Know exactly how each courier connects.</p>
         </div>
@@ -92,7 +92,7 @@ export function Usage() {
     <>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">NO SURPRISES</div>
+          <div className="eyebrow">REQUEST ACCOUNTING</div>
           <h1>{t.usage}</h1>
           <p>A clear view of every request.</p>
         </div>
@@ -196,7 +196,7 @@ export function Activity() {
     <>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">THE LITTLE UPDATES</div>
+          <div className="eyebrow">TRACKING EVENTS</div>
           <h1>{t.activity}</h1>
           <p>Meaningful changes, without the noise.</p>
         </div>

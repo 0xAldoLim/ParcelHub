@@ -23,3 +23,9 @@ Real adapter tests use HTTP fixtures and the official Klik Resi SDK. Klik Resi, 
 The four remaining low findings share the development-only [`deepmerge` prototype-poisoning advisory](https://github.com/advisories/GHSA-gcqx-w48m-w2h4), propagated through `@rollup/plugin-node-resolve`, `workbox-build`, and `vite-plugin-pwa`. The published latest deepmerge version observed was 4.3.1. This build chain does not ship in the runtime Docker image. Production audit is clean. Recheck upstream fixes before future dependency upgrades.
 
 Build warnings are limited to an upstream Zod annotation warning and the main JS chunk being slightly over 500 kB minified (about 159 kB gzip); they do not prevent build or PWA precaching. GitHub Actions is configured for Node 24, Chromium E2E tests, and production audit; its remote result is separate from the local checks recorded here.
+
+## Visual redesign — 9 November 2026
+
+Replaced the sage interface with a navy navigation rail, blue controls, orange actions, a grouped status strip, and a desktop shipment card grid. Updated the wordmark, shipping-label empty state, PWA icons, manifest colors, and light/dark tokens. Courier names, original tracking details, and per-card refresh timestamps remain visible.
+
+Strict TypeScript, ESLint, the production build, all 31 Vitest/RTL tests, and all 3 Playwright scenarios passed after the redesign. Also checked all 8 routes at 1440px and 390px in both themes for horizontal overflow, plus the mobile add-parcel dialog. Screenshots were regenerated from explicitly synthetic demo parcels. The Docker/backend baseline verification above was recorded for commit `6de9380`; the redesign changes presentation only.

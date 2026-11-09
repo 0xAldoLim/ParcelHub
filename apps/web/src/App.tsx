@@ -301,19 +301,18 @@ export function App() {
               <Package size={24} strokeWidth={1.8} />
             </span>
             <span>
-              parcel<span>hub</span>
-              <span className="brand-period">.</span>
+              Parcel<span>Hub</span>
             </span>
           </NavLink>
           <div className="workspace">
             <span className="workspace-avatar">P</span>
             <div>
               <strong>Personal workspace</strong>
-              <small>{t.local}</small>
+              <small>INDONESIA · {t.local}</small>
             </div>
             <span className="workspace-indicator" />
           </div>
-          <span className="nav-caption">WORKSPACE</span>
+          <span className="nav-caption">SHIPMENT MANAGEMENT</span>
           <nav>
             {links.map(({ to, icon: Icon, label }) => (
               <NavLink
@@ -331,7 +330,7 @@ export function App() {
               </NavLink>
             ))}
           </nav>
-          <span className="nav-caption second">PREFERENCES</span>
+          <span className="nav-caption second">WORKSPACE TOOLS</span>
           <nav>
             <NavLink to="/usage" onClick={() => setMobile(false)} className="nav-link">
               <ChartNoAxesCombined size={18} />
@@ -345,36 +344,32 @@ export function App() {
           <div className="sidebar-bottom">
             <div className="sidebar-tip">
               <span className="tip-icon">
-                <Package size={19} />
+                <Upload size={19} />
               </span>
               <strong>
-                Many couriers.
+                More parcels?
                 <br />
-                One little hub.
+                Add them in one go.
               </strong>
-              <p>
-                Less tab-hopping.
-                <br />
-                More peace of mind.
-              </p>
+              <p>Import a batch of tracking numbers and keep every shipment organized.</p>
               <button
                 onClick={() => {
                   setBulk(true);
                   setMobile(false);
                 }}
               >
-                Bring your parcels over <ArrowUpRight size={14} />
+                Import tracking numbers <ArrowUpRight size={14} />
               </button>
             </div>
             <div className="connection">
               <span className={online ? 'online-dot' : 'offline-dot'} />
-              <span>{online ? 'All settled. All yours.' : 'Your data stays with you.'}</span>
+              <span>{online ? 'Workspace connected' : 'Offline storage available'}</span>
             </div>
             <div className="sidebar-profile">
-              <div className="profile-avatar">ME</div>
+              <div className="profile-avatar">PH</div>
               <div>
                 <strong>My workspace</strong>
-                <small>Private by default</small>
+                <small>Self-hosted · Private</small>
               </div>
               <button
                 className="icon-button"
@@ -403,8 +398,8 @@ export function App() {
                 {mobile ? <X size={21} /> : <Menu size={21} />}
               </button>
               <span className="breadcrumb">
-                Workspace<span>/</span>
-                <strong>ParcelHub</strong>
+                ParcelHub<span>/</span>
+                <strong>Shipment workspace</strong>
               </span>
             </div>
             <div className="topbar-actions">
@@ -433,14 +428,14 @@ export function App() {
                 onClick={() => navigate('/settings')}
                 aria-label="Workspace settings"
               >
-                ME
+                PH
               </button>
             </div>
           </header>
           <main id="main-content">
             <div className="main-meta">
               <span>
-                <i /> YOUR PARCELS, UNDER ONE ROOF
+                <i /> INDONESIA / MULTI-COURIER TRACKING
               </span>
               <span>
                 {new Intl.DateTimeFormat(settings.language === 'id' ? 'id-ID' : 'en-GB', {
@@ -474,7 +469,7 @@ export function App() {
             {parcels.isPending ? (
               <div className="loading">
                 <Package size={36} />
-                <p>Opening your delivery desk…</p>
+                <p>Loading your shipments…</p>
               </div>
             ) : (
               <Routes>
@@ -499,8 +494,7 @@ export function App() {
             )}
             <footer className="app-footer">
               <span>
-                parcelhub<span className="brand-period">.</span>{' '}
-                <span className="muted">A little less wondering.</span>
+                ParcelHub <span className="muted">Every shipment. One workspace.</span>
               </span>
               <div className="row">
                 {installEvent && (

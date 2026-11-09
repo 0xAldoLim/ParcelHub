@@ -1,5 +1,15 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { X, Package, CircleCheck, Truck, Clock3, CircleAlert, CircleHelp, ArrowUpRight } from 'lucide-react';
+import {
+  X,
+  Package,
+  CircleCheck,
+  Truck,
+  Clock3,
+  CircleAlert,
+  CircleHelp,
+  ArrowUpRight,
+  Barcode,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import {
   carriers,
@@ -112,11 +122,13 @@ export function OfficialLink({ parcel }: { parcel: Parcel }) {
 export function EmptyArt() {
   return (
     <div className="empty-art" aria-hidden="true">
-      <div className="art-orbit" />
-      <div className="art-dot one" />
-      <div className="art-dot two" />
       <div className="art-package">
-        <Package size={52} strokeWidth={1.25} />
+        <Package size={34} strokeWidth={1.6} />
+        <div className="art-label-lines">
+          <span />
+          <span />
+        </div>
+        <Barcode size={76} strokeWidth={1.2} />
       </div>
       <span className="art-check">
         <CircleCheck size={23} />

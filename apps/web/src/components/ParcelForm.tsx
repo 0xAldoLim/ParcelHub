@@ -101,7 +101,7 @@ export function ParcelForm({
       open={open}
       onClose={onClose}
       title={existing ? 'Edit parcel' : t.add}
-      description={existing ? 'Keep the little details together.' : t.intro}
+      description={existing ? 'Update your shipment information.' : t.intro}
     >
       <form onSubmit={submit} className="form">
         <div className="field">
@@ -150,7 +150,7 @@ export function ParcelForm({
             value={values.nickname}
             onChange={(e) => change('nickname', e.target.value)}
             maxLength={100}
-            placeholder="Something to look forward to"
+            placeholder="e.g. Mechanical keyboard"
           />
         </div>
         <div className="field">

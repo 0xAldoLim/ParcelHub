@@ -12,7 +12,6 @@ import {
   Plus,
   ArrowUpRight,
   RefreshCw,
-  Leaf,
   ShieldCheck,
   WifiOff,
   FlaskConical,
@@ -147,10 +146,10 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
       <div className="page-heading">
         <div>
           <div className="eyebrow">
-            {archived ? 'KEPT FOR LATER' : full ? 'YOUR DELIVERY COLLECTION' : 'YOUR DELIVERY DESK'}
+            {archived ? 'SHIPMENT RECORDS' : full ? 'TRACKING CENTER' : 'YOUR LOGISTICS AT A GLANCE'}
           </div>
           <h1>{archived ? t.archive : full ? t.parcels : t.welcome}</h1>
-          <p>{archived ? 'Every past delivery, right where you left it.' : t.intro}</p>
+          <p>{archived ? 'Your completed and archived shipment records.' : t.intro}</p>
         </div>
         <button className="button primary" onClick={() => add()}>
           <Plus size={17} />
@@ -161,7 +160,7 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
         <div className="stats">
           {stats.map(({ label, count, icon: Icon, key }, i) => (
             <button
-              className={`stat ${i === 0 ? 'featured' : ''} ${filter === key ? 'selected' : ''}`}
+              className={`stat stat-${key.toLowerCase()} ${i === 0 ? 'featured' : ''} ${filter === key ? 'selected' : ''}`}
               key={key}
               onClick={() => setFilter(filter === key ? 'all' : key)}
             >
@@ -170,16 +169,8 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
                 <Icon size={16} />
               </div>
               <div className="stat-number">
-                {count.toString().padStart(2, '0')}
-                <span className="stat-caption">
-                  {i === 0
-                    ? 'in your corner'
-                    : label === t.delivered
-                      ? 'safe & sound'
-                      : label === t.attention
-                        ? 'a closer look'
-                        : 'parcels'}
-                </span>
+                {count}
+                <span className="stat-caption">{language === 'id' ? 'paket' : 'parcels'}</span>
               </div>
             </button>
           ))}
@@ -307,7 +298,7 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
           {base.length === 0 ? (
             <div className="empty-state">
               <EmptyArt />
-              <span className="eyebrow">ROOM FOR GOOD THINGS</span>
+              <span className="eyebrow">YOUR TRACKING WORKSPACE</span>
               <h2>{archived ? 'Nothing archived yet.' : t.empty}</h2>
               <p>{archived ? 'Archive a parcel to keep it here, out of your everyday view.' : t.emptyBody}</p>
               {!archived && (
@@ -351,34 +342,21 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
           <aside className="activity-rail">
             <div className="focus-card">
               <div className="row between">
-                <span className="eyebrow">A HEADS-UP</span>
+                <span className="eyebrow">DELIVERY BRIEF</span>
                 <span className="focus-icon">
                   <Truck size={18} />
                 </span>
               </div>
-              <h3>
-                {unarchived.some((p) => p.status === 'OUT_FOR_DELIVERY')
-                  ? 'A knock at the door?'
-                  : 'Good things take a journey.'}
-              </h3>
+              <div className="delivery-count">
+                {unarchived.filter((p) => p.status === 'OUT_FOR_DELIVERY').length}
+                <span>{t.out}</span>
+              </div>
+              <h3>{language === 'id' ? 'Pengantaran tahap akhir' : 'On the final mile'}</h3>
               <p>
                 {unarchived.some((p) => p.status === 'OUT_FOR_DELIVERY')
-                  ? `${unarchived.filter((p) => p.status === 'OUT_FOR_DELIVERY').length} parcel(s) are out for delivery. Keep an ear out.`
-                  : 'From the first scan to your doorstep, keep the whole journey in view.'}
+                  ? 'These shipments have been marked out for delivery by their tracking source.'
+                  : 'No shipments are currently marked out for delivery. New updates will appear here.'}
               </p>
-              <div className="route-visual">
-                <span />
-                <i />
-                <span />
-                <i />
-                <span className="destination">
-                  <Package size={15} />
-                </span>
-              </div>
-              <div className="route-labels">
-                <span>Picked up</span>
-                <span>Your doorstep</span>
-              </div>
               {unarchived.some((p) => p.trackingMode === 'mock') && (
                 <span className="small synthetic">Includes synthetic demo data</span>
               )}
@@ -420,7 +398,7 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
             </div>
             <div className="privacy-card">
               <span>
-                <Leaf size={19} />
+                <ShieldCheck size={19} />
               </span>
               <h3>{t.notice}</h3>
               <p>{t.noticeBody}</p>
@@ -429,12 +407,12 @@ export function Dashboard({ archived = false, full = false }: { archived?: boole
                 <ArrowUpRight size={14} />
               </Link>
             </div>
-            <div className="rail-caption">A little order. A little peace of mind.</div>
+            <div className="rail-caption">LOCAL STORAGE / PRIVATE BY DESIGN</div>
           </aside>
         )}
       </div>
       <div className="page-caption">
-        MADE FOR THE WAY INDONESIA DELIVERS <span>12 couriers. One place.</span>
+        CONNECTING INDONESIA'S DELIVERIES <span>12 couriers · One workspace</span>
       </div>
       {!settings.allowPaid && <div className="sr-only">Paid API calls are disabled.</div>}
     </>

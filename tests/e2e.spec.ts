@@ -58,7 +58,7 @@ test('save, restart, update synthetic tracking, timeline, archive and restore', 
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'A little less wondering.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Shipment overview' })).toBeVisible();
   await page.getByRole('button', { name: 'Add parcel', exact: true }).first().click();
   await page.getByLabel('Tracking number', { exact: false }).fill('E2E-123456');
   await page.getByLabel('Courier', { exact: false }).selectOption('jne');

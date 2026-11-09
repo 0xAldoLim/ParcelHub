@@ -75,7 +75,9 @@ export function ParcelCard({ parcel: p }: { parcel: Parcel }) {
     toast(p.archivedAt ? 'Parcel restored.' : 'Parcel archived.');
   }
   return (
-    <article className={`parcel-card ${p.trackingMode === 'mock' ? 'demo-card' : ''}`}>
+    <article
+      className={`parcel-card parcel-${p.status.toLowerCase()} ${p.trackingMode === 'mock' ? 'demo-card' : ''}`}
+    >
       <div className="parcel-main">
         <CarrierLogo code={p.carrierCode} />
         <div className="parcel-identity">
