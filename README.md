@@ -1,126 +1,137 @@
 # ParcelHub
 
-**Every shipment. One workspace.** A self-hosted parcel dashboard for Indonesian couriers, with SQLite persistence, offline editing, and explicit tracking provenance.
+**All your deliveries, one dashboard.**
 
-![ParcelHub dashboard with explicitly synthetic test shipments](docs/screenshots/desktop.png)
+Save a tracking number once and keep your parcels from different Indonesian couriers together. See the latest saved status, check the delivery history, and keep notes without opening a separate website for every shipment.
 
-## Run locally
+ParcelHub runs on your own computer or server. You can organize parcels without a paid tracking subscription; automatic courier updates require a compatible tracking provider.
 
-Install **Node.js 24.10 or later** (Node 24 LTS recommended) with npm. Node's built-in SQLite avoids native database compilation.
+![ParcelHub dashboard showing clearly labeled demo shipments](docs/screenshots/desktop.png)
+
+## What you can do
+
+- Save parcels with a name, courier, tracking number, store, notes, and tags.
+- Follow shipping updates and view the original courier event descriptions.
+- Search and filter parcels, then archive completed deliveries.
+- Import several tracking numbers at once and review duplicates before saving.
+- View saved tracking information and add or edit parcels while offline.
+- Choose a light or dark theme and English or Bahasa Indonesia.
+- Export your parcels and make full backups.
+- Install ParcelHub from a supported browser for quicker access.
+
+## Start ParcelHub
+
+You need [Node.js](https://nodejs.org/en/download) **24.10 or later**. Node 24 LTS is supported. Internet access is needed for the initial installation.
+
+Get the project by [downloading the ZIP](https://github.com/0xAldoLim/ParcelHub/archive/refs/heads/main.zip) and extracting it, or by cloning this repository.
+
+### Windows
+
+1. Open the extracted **ParcelHub** folder containing `Start-ParcelHub.ps1`.
+2. Open PowerShell in that folder.
+3. Run:
+
+   ```powershell
+   powershell -NoProfile -ExecutionPolicy Bypass -File .\Start-ParcelHub.ps1
+   ```
+
+4. Wait until the terminal says ParcelHub is running.
+5. Open **[http://127.0.0.1:3001](http://127.0.0.1:3001)** in your browser.
+
+The launcher handles setup and starts the app. If npm is missing, it downloads a local copy into the project folder. Keep the terminal open while using ParcelHub. Press **Ctrl+C** to stop it; run the same command to start it again. Your saved parcels remain available after restarting.
+
+### macOS, Linux, or manual installation
+
+Open a terminal in the ParcelHub folder. For the first installation, run:
 
 ```sh
 npm ci
 cp .env.example .env
-npm run dev
-```
-
-On PowerShell, use `Copy-Item .env.example .env` instead of `cp`. Open **http://127.0.0.1:5173**. Vite proxies the backend on port 3001. Both processes bind to localhost by default. Use a consistent hostname; localhost and 127.0.0.1 have separate browser caches.
-
-Windows convenience launcher: `powershell -ExecutionPolicy Bypass -File .\Start-ParcelHub.ps1` builds and runs the production app. Add `-Development` for Vite. If this machine has Node but no npm, the launcher downloads a pinned, workspace-local npm from the official registry. It does not change system installation or execution-policy settings.
-
-For production, including PWA/offline shell support:
-
-```sh
 npm run build
 npm start
 ```
 
-Open **http://127.0.0.1:3001**. The backend serves the built React application. SQLite is stored in `data/parcelhub.sqlite`; it survives process restarts and builds. Stop with Ctrl+C. The PWA shell is enabled in production builds, not Vite development.
+On PowerShell, use `Copy-Item .env.example .env` instead of `cp` if installing manually.
 
-The dashboard starts empty. Add a real number with automatic/manual tracking, or choose **Explore with demo parcels** to create clearly labeled synthetic examples. No live subscription is needed to save, search, edit, archive, import, or export parcels. Mock parcels advance through deterministic synthetic stages every minute and update when refreshed. They are never a fallback for real parcels.
+Open **[http://127.0.0.1:3001](http://127.0.0.1:3001)**. After the first setup, start it again with `npm start`. Keep the terminal open while the app is running.
 
-## Features
+### Docker
 
-- Twelve-courier registry; explicit active/configured/manual/unverified capability display.
-- Save once, copy numbers, parcel details, full original event descriptions, timestamps with timezones, deduplicated history, notes, tags, store, and order date.
-- Search names/numbers/notes; filter status, courier, tags, added date and changed date; sort, archive, restore, and bulk duplicate preview.
-- Server-side Klik Resi SDK adapter, RajaOngkir AWB adapter, restricted Biteship tracking-ID adapter, deterministic mock provider, and verified manual links.
-- Four-hour persistent scheduling, one-hour out-for-delivery priority, terminal/archive polling stop, capped backoff, authentication pauses, rate-limit handling, provider circuit breakers, serialized requests, and in-flight deduplication.
-- Atomic request/cost reservations, global and provider caps, opt-in fallback, API usage page. Real API calls start **disabled**. Default monthly estimated cap is **Rp50,000**.
-- IndexedDB snapshot and explicit mutation queue; offline creation/editing, replay with stable IDs, and visible conflicts. SQLite remains authoritative when reachable.
-- Installable PWA with PNG/maskable icons, offline shell, update prompt, responsive mobile navigation, light/dark/system appearance, English/Bahasa Indonesia navigation and status labels.
-- Persisted transition identifiers and browser notifications while open, controlled by explicit permission/subscriptions.
-- JSON merge import/export and validated SQLite backup/restore. Restore downloads a prior snapshot for undo.
-- Validation, same-origin mutation checks, localhost Host allowlist, CSP/security headers, rate limits, optional token sessions, and mandatory authentication for non-loopback bindings.
-
-## Enable real tracking
-
-1. Review [provider comparison](docs/provider-comparison.md) and confirm account access, current terms, courier support, and pricing with the provider.
-2. Put credentials in the **backend `.env`**, never in a `VITE_` variable:
-
-```dotenv
-KLIKRESI_API_KEY=your-server-side-key
-RAJAONGKIR_API_KEY=
-RAJAONGKIR_CARRIERS=jne,sicepat
-BITESHIP_API_KEY=
-```
-
-3. Restart the backend. In **Settings → API providers**, enable the provider, set priority, price estimate, and request caps. Click **Test connection**. Klik Resi tests account authentication; other adapters report configuration until actual tracking succeeds.
-4. In **Settings → Request budgets**, enable real API calls and save settings. Fallback remains disabled unless explicitly enabled.
-5. Refresh a saved **Automatic** parcel. The source, success timestamp, and errors appear on its card/details. ID Express through Klik Resi may need a recipient phone number; RajaOngkir JNE requires the final five phone digits. Supply these in **Edit parcel → More details**. This app never bypasses verification.
-6. For Biteship, enter the tracking ID produced by your Biteship order in **More details → Biteship tracking ID**. The AWB alone cannot call the documented endpoint.
-
-Authentication failures persistently pause the provider. Change `.env`, restart, then use **Reset circuit / auth pause**. No API keys are editable or retrievable through browser endpoints. Secrets do not enter SQLite or frontend builds.
-
-## Data and offline behavior
-
-Use **Settings → Your data** for exports and backups. JSON imports validate every record first, merge only new parcels, and skip existing IDs or courier/number duplicates. JSON imports do not replace settings. SQLite restore validates integrity, schema version, and records, then restores canonical data in one transaction. It never installs SQL, triggers, or views from an uploaded file. Backup uploads are limited to 20 MB.
-
-Before a restore replaces records, the server also saves the previous database under `DATA_DIR/backups/`, independently of the browser's undo download. Mutations and the scheduler pause during restoration.
-
-The browser retains saved parcels and queued edits in IndexedDB. The production service worker caches only application assets, not API responses. Pending edits overlay the last snapshot and survive refreshes. On reconnection, the queue replays before fetching authoritative data. A version mismatch pauses that parcel's queue; **Review changes** lets you inspect/export your edit, explicitly apply your fields to the current version, or discard the edit. Unsynced changes block import/restore in this browser. Keep the browser profile until pending edits have synchronized or been exported.
-
-Offline caching is per device/browser origin, and can contain personal data. Sign-out invalidates the session cookie but intentionally retains the local offline cache; clear site data on a shared device. Browser storage can be evicted; keep SQLite/JSON backups. The server and browser must be reachable again for provider refreshes. Installing a PWA does not create an always-running server or a push service.
-
-## Docker Compose
+Copy `.env.example` to `.env` and set `PARCELHUB_AUTH_TOKEN` to a random access token of at least 24 characters. The [self-hosting guide](docs/deployment.md#docker) includes a command to generate one.
 
 ```sh
-# Set PARCELHUB_AUTH_TOKEN to a random value of at least 24 characters in .env first.
 docker compose up --build -d
-docker compose ps
-docker compose logs -f parcelhub
-docker compose down
 ```
 
-Open http://127.0.0.1:3001 and sign in with that token. The container runs as a non-root user, migrates automatically, uses a named persistent volume, and has an HTTP health check. `docker compose down` retains the volume. `docker compose down -v` deletes it: do not use that command unless intentionally removing all data.
+Open **[http://127.0.0.1:3001](http://127.0.0.1:3001)** and sign in with that token. Docker keeps the app running in the background, so you can close the terminal.
 
-For LAN/Internet use, see [deployment](docs/deployment.md). Authentication is mandatory whenever HOST is not loopback. Use HTTPS for remote access/PWA installation; keep shipping data private.
+To stop it, run `docker compose down`. Your data stays in its persistent volume. Do not add `-v` unless you intend to delete that data.
 
-## Checks
+## Track your first parcel
 
-```sh
-npm run typecheck
-npm run lint
-npm test
-npm run build
-npm run test:e2e
-npm audit --omit=dev
-```
+1. Click **Add parcel**.
+2. Enter your tracking number and select the courier. Check any suggested courier against your receipt.
+3. Add a name, such as “Running shoes,” so it is easier to find later.
+4. Choose a tracking source and save.
 
-Playwright defaults to installed Microsoft Edge. Set `PLAYWRIGHT_CHANNEL=chrome` for Chrome, or install Edge with `npx playwright install msedge`. The tests start an isolated production backend, actually restart its process, exercise SQLite persistence and synthetic events, archive/restore, offline shell/edit/create/sync, duplicate previews, search, mobile layout, themes, and Bahasa. No real parcel/API credentials are used. See [validation](docs/validation.md) for the results observed in the delivery environment.
+**Automatic** uses an eligible provider you have configured. **Manual** keeps your tracking number and notes available, with an official courier link where one has been verified. **Mock** creates synthetic delivery events for trying the app; it does not track a real shipment.
 
-## Structure
+Use **Refresh** to check for an update without entering the number again. The parcel card shows its tracking source, last successful update, and any refresh problem. If an update fails, the last valid status and history stay visible.
 
-```text
-apps/web/                  React + Vite + Tailwind, TanStack Query, PWA
-apps/server/src/
-  modules/                 Parcel CRUD, import/export and backup/restore
-  persistence/             Drizzle schema/proxy reads, SQLite and migrations
-  providers/               Interface, error categories, real and mock adapters
-  tracking/                Provider selection, budgets, refreshes and transitions
-  scheduler/               Durable due-time polling and recovery
-packages/shared/src/       Strict domain types, Zod validation and normalization
-tests/                     Vitest, React Testing Library and Playwright
-docs/                      Architecture, providers, deployment and validation
-```
+For several parcels, choose **Bulk import**. Enter one tracking number per line, review duplicates, and select a courier for any uncertain entry before importing.
 
-## Current limits
+## Couriers
 
-- No real API credentials were supplied; contract/fixture tests are separate from live verification. Provider-specific ambiguous statuses remain UNKNOWN. Courier availability can change.
-- Some official tracking URLs could not be verified and are intentionally absent. Copy the saved number and consult the courier/marketplace directly. Links open a tracking page; no automatic prefilling is claimed.
-- Main navigation, forms, and status labels support Bahasa; some advanced administrative explanations remain English.
-- Notifications work while the app is open. There is no Web Push service, mobile background polling, or guaranteed delivery when all devices are closed/offline.
-- This is a single-workspace application. The access token protects the whole workspace; there are no multiuser roles. Offline queues are per browser. Only one backend process may own a data directory.
-- Provider request concurrency is one per provider; no distributed scheduler. Backups and SQLite itself are not encrypted at rest: use OS disk encryption and protected filesystem permissions.
+You can save and organize tracking numbers for JNE Express, J&T Express, TIKI, Shopee Express, SiCepat, AnterAja, Ninja Xpress, POS Indonesia, Lion Parcel, ID Express, SAP Express, and Lazada Logistics.
 
-Next: configure a provider account, verify one real shipment per enabled courier, and adjust request prices and quotas to your account. For broader deployment, add TLS and an always-running host.
+Automatic tracking depends on your provider and account access. Open **Couriers** to see which connections are configured and which parcels need manual tracking. Not every provider supports every courier, and some couriers require recipient phone verification.
+
+## Turn on automatic tracking
+
+No provider account is needed to save numbers, organize parcels, or use manual tracking. If you want automatic updates:
+
+1. Choose a provider using the [provider guide](docs/provider-comparison.md).
+2. Add its API key to the `.env` file on the computer running ParcelHub, then restart the app.
+3. Open **Settings → API providers**, enable that provider, and test its connection.
+4. Under **Request budgets**, set your limits, enable real API calls, and click **Save settings**.
+5. Refresh a parcel saved with **Automatic** tracking.
+
+Real API calls start disabled. The default estimated spending cap is **Rp50,000 per month**; you can change it in Settings. **API usage** shows requests and estimated costs. Your provider's billing may differ from these estimates.
+
+Klik Resi and RajaOngkir/Komerce adapters are available. Biteship tracking requires the tracking ID from a shipment created through your Biteship account; an external marketplace tracking number alone is insufficient. The provider guide explains setup and restrictions.
+
+Automatic refresh normally runs every four hours while ParcelHub is running. Delivered and archived parcels stop automatic polling.
+
+## Offline access and notifications
+
+Visit the running app at least once before going offline. ParcelHub can then show saved tracking information, labeled as cached, and keep parcel additions or edits on your device until it reconnects. If an edit conflicts with the server, use **Review changes** to choose what to keep. Export pending changes before clearing your browser data.
+
+In a supported browser, choose **Install ParcelHub** when offered, or use the browser's install-app menu. Installation gives you an app shortcut and offline access; your computer or server must still be running for new courier updates.
+
+Enable browser notifications in **Settings → Notifications** and choose which delivery events matter to you. Notifications currently work while the app is open; they are not guaranteed when every device is closed or offline.
+
+## Keep your data
+
+In **Settings**, use **Export JSON** for a portable parcel file or **Backup SQLite** for a full backup. **Import JSON** adds new parcels and skips duplicates. **Restore SQLite** replaces the current database, so make a backup before restoring. ParcelHub also saves a safety copy before replacement.
+
+A normal local installation stores parcels in the `data/` folder. Keep that folder and your `.env` file when updating or moving the app. Backups contain personal shipping information, so keep them private.
+
+On a shared computer, signing out keeps the offline browser cache. Clear the site's browser data when you no longer want it stored on that device.
+
+## Open it on another device or on the internet
+
+The default address works only on the computer running ParcelHub. On a phone, `127.0.0.1` refers to the phone itself.
+
+To use ParcelHub over your home network or at a public web address, follow the [self-hosting guide](docs/deployment.md#remote-or-lan-access). That setup requires authentication. Use HTTPS for remote access and installation on devices outside localhost.
+
+This GitHub repository contains the application; it is not a hosted ParcelHub website. A shared web address needs a computer or server that stays running.
+
+## Having trouble opening it?
+
+- **The page will not load:** start ParcelHub and wait for the running message. Check that its terminal is still open, or that its Docker container is running.
+- **You are using port 5173:** that is the optional development server. The normal app opens on **port 3001**.
+- **You see an old design:** use the **Update app** prompt when shown, then reload the page.
+- **Your parcels look missing:** use the same browser address and profile as before. `localhost` and `127.0.0.1` have separate offline caches. Check that the app is using the same `data/` folder.
+- **A parcel has no new tracking events:** check its source and provider error. Saving a number does not guarantee a courier has supplied tracking data.
+
+For more help, see [self-hosting and recovery](docs/deployment.md) or [provider setup](docs/provider-comparison.md). Contributors can find commands and project details in the [development guide](docs/development.md).
